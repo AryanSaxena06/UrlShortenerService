@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.shorturl.model.Url;
 import com.example.shorturl.model.UrlDto;
 import com.example.shorturl.model.UrlReport;
 import com.example.shorturl.service.ReactiveUrlService;

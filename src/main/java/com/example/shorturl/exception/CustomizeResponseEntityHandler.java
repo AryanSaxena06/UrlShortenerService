@@ -10,7 +10,7 @@ import com.example.shorturl.model.ErrorDetails;
 @ControllerAdvice
 public class CustomizeResponseEntityHandler 
 {
-	@ExceptionHandler(ArguementNotValidException.class)
+	
 	public ResponseEntity<ErrorDetails> notValidArguement(Exception ex)
 	{
 		ErrorDetails error =new ErrorDetails();

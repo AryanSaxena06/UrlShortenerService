@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,8 @@ public class ReactiveUrlService
 	{
 		logger.info("Generate method invoked at service with object " +urlDto);
 		return Mono.just(urlDto)
-				.filter(urlD ->!urlD.getUrl().isBlank() && !urlD.getUrl().contains("miniurl") )
+		
+				.filter(urlD ->UrlValidator.getInstance().isValid(urlD.getUrl()) && !urlD.getUrl().contains("miniurl")  )
 				.switchIfEmpty(Mono.error(new ArguementNotValidException("Please Provide Valid Long Url")))
 				
 				.filter(urlD-> urlD.getUrl().length()>50)
@@ -103,9 +105,8 @@ public class ReactiveUrlService
 				
 				.flatMap(url->urlReportRepo.findByShortUrlAndDate(shortUrl, LocalDate.now())
 						.flatMap(urlReport->updateHits(urlReport))
-						
-						.switchIfEmpty(createNewUrlReport(url))
-						.then(Mono.just(url.getLongUrl())));
+							.switchIfEmpty(createNewUrlReport(url))
+								.then(Mono.just(url.getLongUrl())));
 				
 	} 
 	
@@ -120,7 +121,7 @@ public class ReactiveUrlService
 	//delete the url object from db if it is expired	
 	public  Mono<Void> deleteShortUrl(String shortUrl) {
 		return repo.findByShortUrl(shortUrl)
-				.flatMap(u->repo.delete(u));
+				.flatMap(url->repo.delete(url));
 		}
 	//if for a particular date their is a entry then increase the hits by 1 in the same UrlReport Object
 	private Mono<UrlReport> updateHits(UrlReport urlReport) {

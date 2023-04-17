@@ -1,7 +1,7 @@
 package com.example.shorturl.exception;
 
 
-public class UrlLengthException extends Throwable {
+public class UrlLengthException extends RuntimeException {
 
 	String message;
 	
